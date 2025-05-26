@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Place Pizza</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-image: url(italian-cuisine-6903773_1280.jpg);
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        /* Header Styles */
+        .top-bar {
+            background: #e74c3c;
+            color: white;
+            padding: 10px 0;
+            font-size: 14px;
+        }
+
+        .top-bar .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            
+        }
+
+        .address {
+            display: flex;
+            align-items: center;
+        }
+
+        .address::before {
+            content: "📍";
+            margin-right: 8px;
+        }
+
+        .delivery {
+            display: flex;
+            align-items: center;
+        }
+
+        .delivery::before {
+            content: "🛵";
+            margin-right: 8px;
+        }
+
+        header {
+            background: rgba(0, 0, 0, 0.8);
+            position: relative;
+            width: 100%;
+            top: 40px;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #e74c3c;
+            font-family: 'Times New Roman', Times, serif;
+        }
+
+        .logo span {
+            color: white;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+
+        nav a:hover,
+        nav a.active {
+            color: #e74c3c;
+        }
+
+        /* Main Content Styles */
+        .page-section {
+            display: none;
+            min-height: 100vh;
+            padding-top: 120px;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('/api/placeholder/1200/600');
+            background-size: cover;
+            background-position: center;
+            height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .hero-content h1 .highlight {
+            color: #e74c3c;
+        }
+
+        .hero-content p {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            max-width: 600px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #e74c3c;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .about-section {
+            padding: 80px 0;
+            background: #f8f9fa;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .about-text h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .about-text h2 .highlight {
+            color: #e74c3c;
+        }
+
+        .about-text p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 15px;
+            color: #666;
+        }
+
+        .chef-image {
+            text-align: center;
+        }
+
+        .chef-image img {
+            width: 150px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        /* Menu Styles */
+        .menu-header {
+            text-align: center;
+            padding: 50px 0;
+            background: #fff;
+        }
+
+        .menu-header h1 {
+            font-size: 3rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .menu-categories {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 50px;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            padding: 10px 25px;
+            background: #f8f9fa;
+            border: 2px solid #e74c3c;
+            color: #e74c3c;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .category-btn.active,
+        .category-btn:hover {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 0 0 50px 0;
+        }
+
+        .menu-item {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .menu-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .menu-item-content {
+            padding: 20px;
+        }
+
+        .menu-item h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .menu-item p {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .menu-item-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+
+        /* Contact Styles */
+        .contact-section {
+            padding: 80px 0;
+            background: #f8f9fa;
+        }
+
+        .contact-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+        }
+
+        .contact-info h2 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .contact-item {
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .contact-item .icon {
+            font-size: 1.5rem;
+            color: 📍;
+            width: 30px;
+        }
+
+        .contact-form {
+            background: rgb(12, 12, 68);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .contact-form h3 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #e6e1e1;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #f1efef;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #e74c3c;
+        }
+
+        .form-group textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        /* Footer */
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 20px;
+            color: #e74c3c;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            line-height: 1.8;
+        }
+
+        .footer-section a:hover {
+            color: #e74c3c;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #555;
+            padding-top: 20px;
+            color: #ccc;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .top-bar .container {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            nav ul {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .contact-content {
+                grid-template-columns: 1fr;
+            }
+
+            .menu-categories {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="container">
+            <div class="address">20 rue mbochi Poto Poto, République du Congo</div>
+            <div class="delivery">Livraison Gratuite: 065222969</div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <div class="logo">P<span>izza</span></div>
+            <nav>
+                <ul>
+                    <li><a href="#" class="nav-link active" data-page="accueil">ACCUEIL</a></li>
+                    <li><a href="#" class="nav-link" data-page="menu">MENU</a></li>
+                    <li><a href="#" class="nav-link" data-page="bien-etre">BIEN-ÊTRE</a></li>
+                    <li><a href="#" class="nav-link" data-page="contact">CONTACTEZ-NOUS</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Sections -->
+    
+    <!-- Accueil Page -->
+    <div id="accueil" class="page-section active">
+        <div class="hero">
+            <div class="hero-content">
+                <h1>Pizzas <span class="highlight">Incroyables!</span></h1>
+                <p>Une délicieuse recette pour une sensation incomparable avec des ingrédients vitalement sélectionnés</p>
+                <p>Pour une saveur exceptionnelle et une texture parfaite</p>
+                <a href="#" class="btn" onclick="showPage('menu')">DÉCOUVRIR LE MENU</a>
+            </div>
+        </div>
+
+        <div class="about-section">
+            <div class="container">
+                <div class="about-content">
+                    <div class="about-text">
+                        <h2>Bienvenue à la <span class="highlight">Place Pizza</span></h2>
+                        <p>Des saveurs uniques à découvrir. Des recettes traditionnelles préparées avec soin, pour une expérience gustative inoubliable. Des ingrédients frais et de qualité pour satisfaire vos papilles.</p>
+                        <p>Notre pâte fait maison tous les jours. Des pizzas cuites au feu de bois pour plus d'authenticité.</p>
+                        <p>Depuis plus de 10 ans, nous perpétuons la tradition de la vraie pizza italienne avec des recettes transmises de génération en génération.</p>
+                    </div>
+                    <div class="chef-image">
+                        <img src="images-removebg-preview.png" alt="Notre Chef Pizzaiolo">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu Page -->
+    <div id="menu" class="page-section">
+        <div class="menu-header">
+            <div class="container">
+                <h1>Notre Menu</h1>
+                <p>Découvrez nos délicieuses créations</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="menu-categories">
+                <div class="category-btn active" onclick="filterMenu('all')">Toutes</div>
+                <div class="category-btn" onclick="filterMenu('classique')">Classiques</div>
+                <div class="category-btn" onclick="filterMenu('speciale')">Spéciales</div>
+                <div class="category-btn" onclick="filterMenu('vegetarienne')">Végétariennes</div>
+            </div>
+
+            <div class="menu-grid">
+                <div class="menu-item" data-category="classique">
+                    <img src="pizza-2446700_640.jpg" alt="Pizza Margherita">
+                    <div class="menu-item-content">
+                        <h3>Margherita</h3>
+                        <p>Sauce tomate, mozzarella fraîche, basilic frais, huile d'olive extra vierge</p>
+                        <div class="menu-item-footer">
+                            <span class="price">2500fcfa</span>
+                            <button class="btn">Commander</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-item" data-category="classique">
+                    <img src="pizza-2589569_640.jpg" alt="Pizza Pepperoni">
+                    <div class="menu-item-content">
+                        <h3>Pepperoni</h3>
+                        <p>Sauce tomate, mozzarella, pepperoni épicé, origan</p>
+                        <div class="menu-item-footer">
+                            <span class="price">2500fcfa</span>
+                            <button class="btn">Commander</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-item" data-category="speciale">
+                    <img src="pizza.jpeg" alt="Pizza Quattro Stagioni">
+                    <div class="menu-item-content">
+                        <h3>Quattro Stagioni</h3>
+                        <p>Sauce tomate, mozzarella, jambon, champignons, artichauts, olives noires</p>
+                        <div class="menu-item-footer">
+                            <span class="price">2500fcfa</span>
+                            <button class="btn">Commander</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-item" data-category="vegetarienne">
+                    <img src="pizza-7391923_960_720.jpg" alt="Pizza Végétarienne">
+                    <div class="menu-item-content">
+                        <h3>Végétarienne</h3>
+                        <p>Sauce tomate, mozzarella, poivrons, courgettes, aubergines, oignons rouges</p>
+                        <div class="menu-item-footer">
+                            <span class="price">3000fcfa</span>
+                            <button class="btn">Commander</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-item" data-category="speciale">
+                    <img src="téléchargement (4).jpeg" alt="Pizza Calzone">
+                    <div class="menu-item-content">
+                        <h3>Calzone</h3>
+                        <p>Pizza fermée avec ricotta, jambon, champignons, mozzarella</p>
+                        <div class="menu-item-footer">
+                            <span class="price">3000fcfa</span>
+                            <button class="btn">Commander</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-item" data-category="classique">
+                    <img src="téléchargement (6).jpeg" alt="Pizza Napoletana">
+                    <div class="menu-item-content">
+                        <h3>Napoletana</h3>
+                        <p>Sauce tomate, mozzarella, anchois, câpres, olives noires, origan</p>
+                        <div class="menu-item-footer">
+                            <span class="price">4000fcfa</span>
+                            <button class="btn">Commander</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bien-être Page -->
+    <div id="bien-etre" class="page-section">
+        <div class="container" style="padding-top: 50px;">
+            <div class="about-section">
+                <h2 style="text-align: center; margin-bottom: 40px;">Bien-être & Qualité</h2>
+                
+                <div class="about-content">
+                    <div class="about-text">
+                        <h3>Nos Engagements Santé</h3>
+                        <p>Chez Place Pizza, votre bien-être est notre priorité. Nous sélectionnons rigoureusement nos ingrédients pour vous offrir des pizzas savoureuses et équilibrées.</p>
+                        
+                        <h3>Ingrédients Frais & Locaux</h3>
+                        <p>Nos légumes sont sourcés localement auprès de producteurs partenaires. Notre mozzarella est fraîche et nos tomates sont cultivées sous le soleil méditerranéen.</p>
+                        
+                        <h3>Options Végétariennes & Vegan</h3>
+                        <p>Large choix de pizzas végétariennes avec des légumes de saison. Options vegan disponibles avec fromage végétal et garnitures spécialement sélectionnées.</p>
+                    </div>
+                    <div class="about-text">
+                        <h3>Pâte Artisanale</h3>
+                        <p>Notre pâte est préparée quotidiennement avec des farines de qualité supérieure. Fermentation lente de 24h pour une meilleure digestibilité.</p>
+                        
+                        <h3>Cuisson au Feu de Bois</h3>
+                        <p>Cuisson traditionnelle au four à bois pour préserver les saveurs et les nutriments. Température idéale pour une pâte croustillante et moelleuse.</p>
+                        
+                        <h3>Informations Nutritionnelles</h3>
+                        <p>Toutes nos pizzas sont accompagnées d'informations nutritionnelles détaillées. Nous proposons des options allégées et des formats adaptés à tous les appétits.</p>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 40px; padding: 40px; background: white; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                    <h3 style="color: #e74c3c; margin-bottom: 20px;">🌱 Certification Bio</h3>
+                    <p>Nos ingrédients biologiques sont certifiés par des organismes agréés. Nous nous engageons dans une démarche éco-responsable pour préserver l'environnement.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Page -->
+    <div id="contact" class="page-section">
+        <div class="contact-section">
+            <div class="container">
+                <div class="contact-content">
+                    <div class="contact-info">
+                        <h2>Contactez-Nous</h2>
+                        
+                        <div class="contact-item">
+                            <div class="icon">📍</div>
+                            <div>
+                                <h4>Adresse</h4>
+                                <p>20 rue mbochi Poto Poto<br>République du Congo</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-item">
+                            <div class="icon">📞</div>
+                            <div>
+                                <h4>Téléphone</h4>
+                                <p>065222969</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-item">
+                            <div class="icon">🕒</div>
+                            <div>
+                                <h4>Horaires d'ouverture</h4>
+                                <p>Lundi - Dimanche<br>11h00 - 23h00</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-item">
+                            <div class="icon">🚚</div>
+                            <div>
+                                <h4>Livraison</h4>
+                                <p>Livraison gratuite<br>Commande minimum: 5000fcfa</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-form">
+                        <h3>Envoyez-nous un message</h3>
+                        <form>
+                            <div class="form-group">
+                                <label for="name">Nom complet</label>
+                                <input type="text" id="name" name="name" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="phone">Téléphone</label>
+                                <input type="tel" id="phone" name="phone">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="subject">Sujet</label>
+                                <input type="text" id="subject" name="subject" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="message">Message</label>
+                                <textarea id="message" name="message" required></textarea>
+                            </div>
+
+                            <button type="submit" class="btn">Envoyer le message</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Place Pizza</h3>
+                    <p>La meilleure pizzeria de la République du Congo. Des pizzas authentiques préparées avec passion depuis plus de 10 ans.</p>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Liens Rapides</h3>
+                    <p><a href="#" onclick="showPage('accueil')">Accueil</a></p>
+                    <p><a href="#" onclick="showPage('menu')">Menu</a></p>
+                    <p><a href="#" onclick="showPage('bien-etre')">Bien-être</a></p>
+                    <p><a href="#" onclick="showPage('contact')">Contact</a></p>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <p>📍 20 rue mbochi Poto Poto <br> République du Congo</p>
+                    <p>📞 065222969</p>
+                    <p>🕒 11h00 - 23h00</p>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 Place Pizza.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navigation function
+        function showPage(pageId) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.page-section');
+            pages.forEach(page => page.classList.remove('active'));
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Update navigation links
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => link.classList.remove('active'));
+            
+            const activeLink = document.querySelector(`[data-page="${pageId}"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+
+        // Add click event listeners to navigation links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const pageId = this.getAttribute('data-page');
+                showPage(pageId);
+            });
+        });
+
+        // Menu filter function
+        function filterMenu(category) {
+            const items = document.querySelectorAll('.menu-item');
+            const buttons = document.querySelectorAll('.category-btn');
+            
+            // Update active button
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Filter items
+            items.forEach(item => {
+                if (category === 'all' || item.getAttribute('data-category') === category) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Form submission
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Merci pour votre message ! Nous vous répondrons dans les plus brefs délais.');
+            this.reset();
+        });
+
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(0, 0, 0, 0.95)';
+            } else {
+                header.style.background = 'rgba(0, 0, 0, 0.8)';
+            }
+        });
+    </script>
+</body>
+</html>
